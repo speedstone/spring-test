@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0068)https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>How to Write a Checker — Pylint 2.0.0 documentation</title>
+    <link rel="stylesheet" href="./How to Write a Checker — Pylint 2.0.0 documentation_files/nature.css" type="text/css">
+    <link rel="stylesheet" href="./How to Write a Checker — Pylint 2.0.0 documentation_files/pygments.css" type="text/css">
+    <link rel="stylesheet" href="./How to Write a Checker — Pylint 2.0.0 documentation_files/badge_only.css" type="text/css">
+    <script async="" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/analytics.js"></script><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/doctools.js"></script>
+    <script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="https://pylint.readthedocs.io/en/latest/genindex.html">
+    <link rel="search" title="Search" href="https://pylint.readthedocs.io/en/latest/search.html">
+    <link rel="next" title="How To Write a Pylint Plugin" href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html">
+    <link rel="prev" title="How To Guides" href="https://pylint.readthedocs.io/en/latest/how_tos/index.html"> 
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://docs.pylint.org/en/latest/how_tos/custom_checkers.html">
+
+<link rel="stylesheet" href="./How to Write a Checker — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'how_tos/custom_checkers' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./How to Write a Checker — Pylint 2.0.0 documentation_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> -->
+</head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html" title="How To Write a Pylint Plugin" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html" title="How To Guides" accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html" accesskey="U">How To Guides</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-write-a-checker">
+<span id="write-a-checker"></span><h1>How to Write a Checker<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#how-to-write-a-checker" title="Permalink to this headline">¶</a></h1>
+<p>You can find some simple examples in the distribution
+(<a class="reference external" href="https://github.com/PyCQA/pylint/blob/master/examples/custom.py">custom.py</a>
+and
+<a class="reference external" href="https://github.com/PyCQA/pylint/blob/master/examples/custom_raw.py">custom_raw.py</a>).</p>
+<p>There are three kinds of checkers:</p>
+<ul class="simple">
+<li>Raw checkers, which analyse each module as a raw file stream.</li>
+<li>Token checkers, which analyse a file using the list of tokens that
+represent the source code in the file.</li>
+<li>AST checkers, which work on an AST representation of the module.</li>
+</ul>
+<p>The AST representation is provided by the <a class="reference external" href="http://astroid.readthedocs.io/en/latest/api/astroid.html#module-astroid" title="(in Astroid v2.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">astroid</span></code></a> library.
+<a class="reference external" href="http://astroid.readthedocs.io/en/latest/api/astroid.html#module-astroid" title="(in Astroid v2.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">astroid</span></code></a> adds additional information and methods
+over <a class="reference external" href="https://docs.python.org/3/library/ast.html#module-ast" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">ast</span></code></a> in the standard library,
+to make tree navigation and code introspection easier.</p>
+<div class="section" id="writing-an-ast-checker">
+<h2>Writing an AST Checker<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#writing-an-ast-checker" title="Permalink to this headline">¶</a></h2>
+<p>Let’s implement a checker to make sure that all <code class="docutils literal"><span class="pre">return</span></code> nodes in a function
+return a unique constant.
+Firstly we will need to fill in some required boilerplate:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">astroid</span>
+
+<span class="kn">from</span> <span class="nn">pylint.checkers</span> <span class="kn">import</span> <span class="n">BaseChecker</span>
+<span class="kn">from</span> <span class="nn">pylint.interfaces</span> <span class="kn">import</span> <span class="n">IAstroidChecker</span>
+
+<span class="k">class</span> <span class="nc">UniqueReturnChecker</span><span class="p">(</span><span class="n">BaseChecker</span><span class="p">):</span>
+    <span class="n">__implements__</span> <span class="o">=</span> <span class="n">IAstroidChecker</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'unique-returns'</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">msgs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">'W0001'</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s1">'Returns a non-unique constant.'</span><span class="p">,</span>
+            <span class="s1">'non-unique-returns'</span><span class="p">,</span>
+            <span class="s1">'All constants returned in a function should be unique.'</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span>
+            <span class="s1">'ignore-ints'</span><span class="p">,</span>
+            <span class="p">{</span>
+                <span class="s1">'default'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'yn'</span><span class="p">,</span> <span class="s1">'metavar'</span> <span class="p">:</span> <span class="s1">'&lt;y_or_n&gt;'</span><span class="p">,</span>
+                <span class="s1">'help'</span><span class="p">:</span> <span class="s1">'Allow returning non-unique integers'</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>So far we have defined the following required components of our checker:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>A name. The name is used to generate a special configuration</dt>
+<dd><p class="first last">section for the checker, when options have been provided.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>A priority. This must be to be lower than 0. The checkers are ordered by</dt>
+<dd><p class="first last">the priority when run, from the most negative to the most positive.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>A message dictionary. Each checker is being used for finding problems</dt>
+<dd><p class="first">in your code, the problems being displayed to the user through <strong>messages</strong>.
+The message dictionary should specify what messages the checker is
+going to emit. It has the following format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">msgs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'message-id'</span><span class="p">:</span> <span class="p">(</span>
+        <span class="s1">'displayed-message'</span><span class="p">,</span> <span class="s1">'message-symbol'</span><span class="p">,</span> <span class="s1">'message-help'</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="last simple">
+<li>The <code class="docutils literal"><span class="pre">message-id</span></code> should be a 5-digit number,
+prefixed with a <strong>message category</strong>.
+There are multiple message categories,
+these being <code class="docutils literal"><span class="pre">C</span></code>, <code class="docutils literal"><span class="pre">W</span></code>, <code class="docutils literal"><span class="pre">E</span></code>, <code class="docutils literal"><span class="pre">F</span></code>, <code class="docutils literal"><span class="pre">R</span></code>,
+standing for <code class="docutils literal"><span class="pre">Convention</span></code>, <code class="docutils literal"><span class="pre">Warning</span></code>, <code class="docutils literal"><span class="pre">Error</span></code>, <code class="docutils literal"><span class="pre">Fatal</span></code> and <code class="docutils literal"><span class="pre">Refactoring</span></code>.
+The rest of the 5 digits should not conflict with existing checkers
+and they should be consistent across the checker.
+For instance,
+the first two digits should not be different across the checker.</li>
+<li>The <code class="docutils literal"><span class="pre">displayed-message</span></code> is used for displaying the message to the user,
+once it is emitted.</li>
+<li>The <code class="docutils literal"><span class="pre">message-symbol</span></code> is an alias of the message id
+and it can be used wherever the message id can be used.</li>
+<li>The <code class="docutils literal"><span class="pre">message-help</span></code> is used when calling <code class="docutils literal"><span class="pre">pylint</span> <span class="pre">--help-msg</span></code>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>We have also defined an optional component of the checker.
+The options list defines any user configurable options.
+It has the following format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">options</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">'option-symbol'</span><span class="p">:</span> <span class="p">{</span><span class="s1">'argparse-like-kwarg'</span><span class="p">:</span> <span class="s1">'value'</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">option-symbol</span></code> is a unique name for the option.
+This is used on the command line and in config files.
+The hyphen is replaced by an underscore when used in the checker,
+similarly to how you would use  <a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">argparse.Namespace</span></code></a>.</li>
+</ul>
+<p>Next we’ll track when we enter and leave a function.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">(</span><span class="n">UniqueReturnChecker</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">linter</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_function_stack</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">visit_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_function_stack</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+
+<span class="k">def</span> <span class="nf">leave_functiondef</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_function_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In the constructor we initialise a stack to keep a list of return nodes
+for each function.
+An AST checker is a visitor, and should implement
+<code class="docutils literal"><span class="pre">visit_&lt;lowered</span> <span class="pre">class</span> <span class="pre">name&gt;</span></code> or <code class="docutils literal"><span class="pre">leave_&lt;lowered</span> <span class="pre">class</span> <span class="pre">name&gt;</span></code>
+methods for the nodes it’s interested in.
+In this case we have implemented <code class="docutils literal"><span class="pre">visit_functiondef</span></code> and <code class="docutils literal"><span class="pre">leave_functiondef</span></code>
+to add a new list of return nodes for this function,
+and to remove the list of return nodes when we leave the function.</p>
+<p>Finally we’ll implement the check.
+We will define a <code class="docutils literal"><span class="pre">visit_return</span></code> function,
+which is called with a <code class="xref py py-class docutils literal"><span class="pre">astroid.node_classes.Return</span></code> node.</p>
+<span class="target" id="astroid-extract-node"></span><p>We’ll need to be able to figure out what attributes a
+<code class="xref py py-class docutils literal"><span class="pre">astroid.node_classes.Return</span></code> node has available.
+We can use <a class="reference external" href="http://astroid.readthedocs.io/en/latest/api/astroid.html#astroid.extract_node" title="(in Astroid v2.0.0)"><code class="xref py py-func docutils literal"><span class="pre">astroid.extract_node()</span></code></a> for this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">astroid</span><span class="o">.</span><span class="n">extract_node</span><span class="p">(</span><span class="s2">"return 5"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node</span>
+<span class="go">&lt;Return l.1 at 0x7efe62196390&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node</span><span class="o">.</span><span class="n">value</span>
+<span class="go">&lt;Const.int l.1 at 0x7efe62196ef0&gt;</span>
+</pre></div>
+</div>
+<p>We could also construct a more complete example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">node_a</span><span class="p">,</span> <span class="n">node_b</span> <span class="o">=</span> <span class="n">astroid</span><span class="o">.</span><span class="n">extract_node</span><span class="p">(</span><span class="s2">"""</span>
+<span class="gp">... </span><span class="s2">def test():</span>
+<span class="gp">... </span><span class="s2">    if True:</span>
+<span class="gp">... </span><span class="s2">        return 5 #@</span>
+<span class="gp">... </span><span class="s2">    return 5 #@</span>
+<span class="go">""")</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node_a</span><span class="o">.</span><span class="n">value</span>
+<span class="go">&lt;Const.int l.4 at 0x7efe621a74e0&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node_a</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">value</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">node_a</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">node_b</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">value</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>For <a class="reference external" href="http://astroid.readthedocs.io/en/latest/api/astroid.html#astroid.extract_node" title="(in Astroid v2.0.0)"><code class="xref py py-func docutils literal"><span class="pre">astroid.extract_node()</span></code></a>, you can use <code class="docutils literal"><span class="pre">#@</span></code> at the end of a line to choose which statements will be extracted into nodes.</p>
+<p>For more information on <a class="reference external" href="http://astroid.readthedocs.io/en/latest/api/astroid.html#astroid.extract_node" title="(in Astroid v2.0.0)"><code class="xref py py-func docutils literal"><span class="pre">astroid.extract_node()</span></code></a>,
+see the <a class="reference external" href="http://astroid.readthedocs.io/en/latest/">astroid documentation</a>.</p>
+<p>Now we know how to use the astroid node, we can implement our check.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visit_return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">astroid</span><span class="o">.</span><span class="n">node_classes</span><span class="o">.</span><span class="n">Const</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">for</span> <span class="n">other_return</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_function_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+       <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other_return</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">value</span> <span class="ow">and</span>
+           <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">ignore_ints</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">pytype</span><span class="p">()</span> <span class="o">==</span> <span class="nb">int</span><span class="p">)):</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span>
+               <span class="s1">'non-unique-returns'</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="n">node</span><span class="p">,</span>
+           <span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_function_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once we have established that the source code has failed our check,
+we use <code class="xref py py-func docutils literal"><span class="pre">add_message()</span></code> to emit our failure message.</p>
+<p>Finally, we need to register the checker with pylint.
+Add the <code class="docutils literal"><span class="pre">register</span></code> function to the top level of the file.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">linter</span><span class="p">):</span>
+    <span class="n">linter</span><span class="o">.</span><span class="n">register_checker</span><span class="p">(</span><span class="n">UniqueReturnChecker</span><span class="p">(</span><span class="n">linter</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>We are now ready to debug and test our checker!</p>
+</div>
+<div class="section" id="debugging-a-checker">
+<h2>Debugging a Checker<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#debugging-a-checker" title="Permalink to this headline">¶</a></h2>
+<p>It is very simple to get to a point where we can use <a class="reference external" href="https://docs.python.org/3/library/pdb.html#module-pdb" title="(in Python v3.6)"><code class="xref py py-mod docutils literal"><span class="pre">pdb</span></code></a>.
+We’ll need a small test case.
+Put the following into a Python file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="k">if</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">5</span>
+    <span class="k">return</span> <span class="mi">5</span>
+
+<span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
+    <span class="k">if</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<p>After inserting pdb into our checker and installing it,
+we can run pylint with only our checker:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ pylint --load-plugins=my_plugin --disable=all --enable=non-unique-returns test.py
+(Pdb)
+</pre></div>
+</div>
+<p>Now we can debug our checker!</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">my_plugin</span></code> refers to a module called <code class="docutils literal"><span class="pre">my_plugin.py</span></code>.
+This module can be made available to pylint by putting this
+module’s parent directory in your <code class="docutils literal"><span class="pre">PYTHONPATH</span></code>
+environment variable or by adding the <code class="docutils literal"><span class="pre">my_plugin.py</span></code>
+file to the <code class="docutils literal"><span class="pre">pylint/checkers</span></code> directory if running from source.</p>
+</div>
+</div>
+<div class="section" id="testing-a-checker">
+<h2>Testing a Checker<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#testing-a-checker" title="Permalink to this headline">¶</a></h2>
+<p>Pylint is very well suited to test driven development.
+You can implement the template of the checker,
+produce all of your test cases and check that they fail,
+implement the checker,
+then check that all of your test cases work.</p>
+<p>Pylint provides a <code class="xref py py-class docutils literal"><span class="pre">pylint.testutils.CheckerTestCase</span></code>
+to make test cases very simple.
+We can use the example code that we used for debugging as our test cases.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">my_plugin</span>
+<span class="kn">import</span> <span class="nn">pylint.testutils</span>
+
+<span class="k">class</span> <span class="nc">TestUniqueReturnChecker</span><span class="p">(</span><span class="n">pylint</span><span class="o">.</span><span class="n">testutils</span><span class="o">.</span><span class="n">CheckerTestCase</span><span class="p">):</span>
+    <span class="n">CHECKER_CLASS</span> <span class="o">=</span> <span class="n">my_plugin</span><span class="o">.</span><span class="n">UniqueReturnChecker</span>
+
+    <span class="k">def</span> <span class="nf">test_finds_non_unique_ints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">func_node</span><span class="p">,</span> <span class="n">return_node_a</span><span class="p">,</span> <span class="n">return_node_b</span> <span class="o">=</span> <span class="n">astroid</span><span class="o">.</span><span class="n">extract_node</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2">        def test(): #@</span>
+<span class="s2">            if True:</span>
+<span class="s2">                return 5 #@</span>
+<span class="s2">            return 5 #@</span>
+<span class="s2">        """</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">visit_functiondef</span><span class="p">(</span><span class="n">func_node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">visit_return</span><span class="p">(</span><span class="n">return_node_a</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertAddsMessages</span><span class="p">(</span>
+            <span class="n">pylint</span><span class="o">.</span><span class="n">testutils</span><span class="o">.</span><span class="n">Message</span><span class="p">(</span>
+                <span class="n">msg_id</span><span class="o">=</span><span class="s1">'non-unique-returns'</span><span class="p">,</span>
+                <span class="n">node</span><span class="o">=</span><span class="n">return_node_b</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">visit_return</span><span class="p">(</span><span class="n">return_node_b</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_ignores_unique_ints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">func_node</span><span class="p">,</span> <span class="n">return_node_a</span><span class="p">,</span> <span class="n">return_node_b</span> <span class="o">=</span> <span class="n">astroid</span><span class="o">.</span><span class="n">extract_node</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2">        def test(): #@</span>
+<span class="s2">            if True:</span>
+<span class="s2">                return 1 #@</span>
+<span class="s2">            return 5 #@</span>
+<span class="s2">        """</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertNoMessages</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">visit_functiondef</span><span class="p">(</span><span class="n">func_node</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">visit_return</span><span class="p">(</span><span class="n">return_node_a</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checker</span><span class="o">.</span><span class="n">visit_return</span><span class="p">(</span><span class="n">return_node_b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once again we are using <a class="reference external" href="http://astroid.readthedocs.io/en/latest/api/astroid.html#astroid.extract_node" title="(in Astroid v2.0.0)"><code class="xref py py-func docutils literal"><span class="pre">astroid.extract_node()</span></code></a> to
+construct our test cases.
+<code class="xref py py-class docutils literal"><span class="pre">pylint.testutils.CheckerTestCase</span></code> has created the linter and checker for us,
+we simply simulate a traversal of the AST tree
+using the nodes that we are interested in.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pylint.readthedocs.io/en/latest/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#">How to Write a Checker</a><ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#writing-an-ast-checker">Writing an AST Checker</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#debugging-a-checker">Debugging a Checker</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#testing-a-checker">Testing a Checker</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html" title="previous chapter">How To Guides</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html" title="next chapter">How To Write a Pylint Plugin</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://pylint.readthedocs.io/en/latest/_sources/how_tos/custom_checkers.rst.txt" rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="https://pylint.readthedocs.io/en/latest/search.html" method="get">
+      <div><input type="text" name="q"></div>
+      <div><input type="submit" value="Go"></div>
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html" title="How To Write a Pylint Plugin">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html" title="How To Guides">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html">How To Guides</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        © Copyright 2003-2018, Logilab, PyCQA and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  
+<!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+  <div class="rst-versions rst-badge" data-toggle="rst-versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book">&nbsp;</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://docs.pylint.org/en/latest/how_tos/custom_checkers.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.8/how_tos/custom_checkers.html">1.8</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.7/how_tos/custom_checkers.html">1.7</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.6.0/how_tos/custom_checkers.html">1.6.0</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/blob/master/doc/how_tos/custom_checkers.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/edit/master/doc/how_tos/custom_checkers.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/pylint/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>.
+      
+
+      
+    </div>
+  </div>
+  
+
+</div>
+</body></html>

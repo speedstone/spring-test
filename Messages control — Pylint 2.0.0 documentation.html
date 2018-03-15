@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0088)https://pylint.readthedocs.io/en/latest/user_guide/message-control.html#messages-control -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Messages control — Pylint 2.0.0 documentation</title>
+    <link rel="stylesheet" href="./Messages control — Pylint 2.0.0 documentation_files/nature.css" type="text/css">
+    <link rel="stylesheet" href="./Messages control — Pylint 2.0.0 documentation_files/pygments.css" type="text/css">
+    <link rel="stylesheet" href="./Messages control — Pylint 2.0.0 documentation_files/badge_only.css" type="text/css">
+    <script async="" src="./Messages control — Pylint 2.0.0 documentation_files/analytics.js"></script><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/doctools.js"></script>
+    <script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="https://pylint.readthedocs.io/en/latest/genindex.html">
+    <link rel="search" title="Search" href="https://pylint.readthedocs.io/en/latest/search.html">
+    <link rel="next" title="Configuration" href="https://pylint.readthedocs.io/en/latest/user_guide/options.html">
+    <link rel="prev" title="Pylint output" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html"> 
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://docs.pylint.org/en/latest/user_guide/message-control.html">
+
+<link rel="stylesheet" href="./Messages control — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'user_guide/message-control' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./Messages control — Pylint 2.0.0 documentation_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> -->
+</head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/options.html" title="Configuration" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/output.html" title="Pylint output" accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/user_guide/index.html" accesskey="U">User Guide</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="messages-control">
+<h1>Messages control<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/message-control.html#messages-control" title="Permalink to this headline">¶</a></h1>
+<p>An example available from the examples directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">"""pylint option block-disable"""</span>
+
+<span class="n">__revision__</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">"""block-disable test"""</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">meth1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="sd">"""this issues a message"""</span>
+        <span class="k">print</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">meth2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="sd">"""and this one not"""</span>
+        <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="k">print</span> <span class="bp">self</span>\
+              <span class="o">+</span> <span class="s2">"foo"</span>
+
+    <span class="k">def</span> <span class="nf">meth3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""test one line disabling"""</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">bla</span> <span class="c1"># pylint: disable=no-member</span>
+        <span class="c1"># error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blop</span>
+
+    <span class="k">def</span> <span class="nf">meth4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""test re-enabling"""</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">bla</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blop</span>
+        <span class="c1"># pylint: enable=no-member</span>
+        <span class="c1"># error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+
+    <span class="k">def</span> <span class="nf">meth5</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""test IF sub-block re-enabling"""</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">bla</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blop</span><span class="p">:</span>
+            <span class="c1"># pylint: enable=no-member</span>
+            <span class="c1"># error</span>
+            <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># no error</span>
+            <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+
+    <span class="k">def</span> <span class="nf">meth6</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""test TRY/EXCEPT sub-block re-enabling"""</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">bla</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># pylint: enable=no-member</span>
+            <span class="c1"># error</span>
+            <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="k">except</span> <span class="n">UndefinedName</span><span class="p">:</span> <span class="c1"># pylint: disable=undefined-variable</span>
+            <span class="c1"># no error</span>
+            <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+
+    <span class="k">def</span> <span class="nf">meth7</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""test one line block opening disabling"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">blop</span><span class="p">:</span> <span class="c1"># pylint: disable=no-member</span>
+            <span class="c1"># error</span>
+            <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># error</span>
+            <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="c1"># error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+
+
+    <span class="k">def</span> <span class="nf">meth8</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""test late disabling"""</span>
+        <span class="c1"># error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blip</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="c1"># no error</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">bla</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">blop</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/user_guide/output.html" title="previous chapter">Pylint output</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/user_guide/options.html" title="next chapter">Configuration</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://pylint.readthedocs.io/en/latest/_sources/user_guide/message-control.rst.txt" rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="https://pylint.readthedocs.io/en/latest/search.html" method="get">
+      <div><input type="text" name="q"></div>
+      <div><input type="submit" value="Go"></div>
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/options.html" title="Configuration">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/output.html" title="Pylint output">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/user_guide/index.html">User Guide</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        © Copyright 2003-2018, Logilab, PyCQA and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  
+<!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+  <div class="rst-versions rst-badge" data-toggle="rst-versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book">&nbsp;</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://docs.pylint.org/en/latest/user_guide/message-control.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.8/user_guide/message-control.html">1.8</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.7/user_guide/message-control.html">1.7</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.6.0/user_guide/message-control.html">1.6.0</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/blob/master/doc/user_guide/message-control.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/edit/master/doc/user_guide/message-control.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/pylint/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>.
+      
+
+      
+    </div>
+  </div>
+  
+
+</div>
+</body></html>

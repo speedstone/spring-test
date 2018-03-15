@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0062)https://pylint.readthedocs.io/en/latest/user_guide/output.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Pylint output — Pylint 2.0.0 documentation</title>
+    <link rel="stylesheet" href="./Pylint output — Pylint 2.0.0 documentation_files/nature.css" type="text/css">
+    <link rel="stylesheet" href="./Pylint output — Pylint 2.0.0 documentation_files/pygments.css" type="text/css">
+    <link rel="stylesheet" href="./Pylint output — Pylint 2.0.0 documentation_files/badge_only.css" type="text/css">
+    <script async="" src="./Pylint output — Pylint 2.0.0 documentation_files/analytics.js"></script><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/doctools.js"></script>
+    <script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="https://pylint.readthedocs.io/en/latest/genindex.html">
+    <link rel="search" title="Search" href="https://pylint.readthedocs.io/en/latest/search.html">
+    <link rel="next" title="Messages control" href="https://pylint.readthedocs.io/en/latest/user_guide/message-control.html">
+    <link rel="prev" title="Running Pylint" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html"> 
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://docs.pylint.org/en/latest/user_guide/output.html">
+
+<link rel="stylesheet" href="./Pylint output — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'user_guide/output' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./Pylint output — Pylint 2.0.0 documentation_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> -->
+</head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/message-control.html" title="Messages control" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/run.html" title="Running Pylint" accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/user_guide/index.html" accesskey="U">User Guide</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pylint-output">
+<h1>Pylint output<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#pylint-output" title="Permalink to this headline">¶</a></h1>
+<p>The default format for the output is raw text. You can change this by passing
+pylint the <code class="docutils literal"><span class="pre">--output-format=&lt;value&gt;</span></code> option. Possible values are: json,
+parseable, colorized and msvs (visual studio).</p>
+<p>Moreover you can customize the exact way information are displayed using the
+<cite>–msg-template=&lt;format string&gt;</cite> option. The <cite>format string</cite> uses the
+<a class="reference external" href="http://docs.python.org/2/library/string.html#formatstrings">Python new format syntax</a> and the following fields are available :</p>
+<dl class="docutils">
+<dt>path</dt>
+<dd>relative path to the file</dd>
+<dt>abspath</dt>
+<dd>absolute path to the file</dd>
+<dt>line</dt>
+<dd>line number</dd>
+<dt>column</dt>
+<dd>column number</dd>
+<dt>module</dt>
+<dd>module name</dd>
+<dt>obj</dt>
+<dd>object within the module (if any)</dd>
+<dt>msg</dt>
+<dd>text of the message</dd>
+<dt>msg_id</dt>
+<dd>the message code (eg. I0011)</dd>
+<dt>symbol</dt>
+<dd>symbolic name of the message (eg. locally-disabled)</dd>
+<dt>C</dt>
+<dd>one letter indication of the message category</dd>
+<dt>category</dt>
+<dd>fullname of the message category</dd>
+</dl>
+<p>For example, the former (pre 1.0) default format can be obtained with:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pylint</span> <span class="o">--</span><span class="n">msg</span><span class="o">-</span><span class="n">template</span><span class="o">=</span><span class="s1">'</span><span class="si">{msg_id}</span><span class="s1">:</span><span class="si">{line:3d}</span><span class="s1">,</span><span class="si">{column}</span><span class="s1">: </span><span class="si">{obj}</span><span class="s1">: </span><span class="si">{msg}</span><span class="s1">'</span>
+</pre></div>
+</div>
+<p>A few other examples:</p>
+<ul>
+<li><p class="first">the new default format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">C</span><span class="p">}:{</span><span class="n">line</span><span class="p">:</span><span class="mi">3</span><span class="n">d</span><span class="p">},{</span><span class="n">column</span><span class="p">:</span><span class="mi">2</span><span class="n">d</span><span class="p">}:</span> <span class="p">{</span><span class="n">msg</span><span class="p">}</span> <span class="p">({</span><span class="n">symbol</span><span class="p">})</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Visual Studio compatible format (former ‘msvs’ output format):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">path</span><span class="p">}({</span><span class="n">line</span><span class="p">}):</span> <span class="p">[{</span><span class="n">msg_id</span><span class="p">}{</span><span class="n">obj</span><span class="p">}]</span> <span class="p">{</span><span class="n">msg</span><span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Parseable (Emacs and all, former ‘parseable’ output format) format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">path</span><span class="p">}:{</span><span class="n">line</span><span class="p">}:</span> <span class="p">[{</span><span class="n">msg_id</span><span class="p">}({</span><span class="n">symbol</span><span class="p">}),</span> <span class="p">{</span><span class="n">obj</span><span class="p">}]</span> <span class="p">{</span><span class="n">msg</span><span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="section" id="source-code-analysis-section">
+<h2>Source code analysis section<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#source-code-analysis-section" title="Permalink to this headline">¶</a></h2>
+<p>For each python module, Pylint will first display a few ‘*’ characters followed
+by the name of the module. Then, a number of messages with the following format:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MESSAGE_TYPE</span><span class="p">:</span> <span class="n">LINE_NUM</span><span class="p">:[</span><span class="n">OBJECT</span><span class="p">:]</span> <span class="n">MESSAGE</span>
+</pre></div>
+</div>
+<p>You can get another output format, useful since it’s recognized by
+most editors or other development tools using the <code class="docutils literal"><span class="pre">--output-format=parseable</span></code>
+option.</p>
+<p>The message type can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li>[R]efactor for a “good practice” metric violation</li>
+<li>[C]onvention for coding standard violation</li>
+<li>[W]arning for stylistic problems, or minor programming issues</li>
+<li>[E]rror for important programming issues (i.e. most probably bug)</li>
+<li>[F]atal for errors which prevented further processing</li>
+</ul>
+</div></blockquote>
+<p>Sometimes the line of code which caused the error is displayed with
+a caret pointing to the error. This may be generalized in future
+versions of Pylint.</p>
+<p>Example (extracted from a run of Pylint on itself…):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">*************</span> <span class="n">Module</span> <span class="n">pylint</span><span class="o">.</span><span class="n">checkers</span><span class="o">.</span><span class="n">format</span>
+<span class="n">W</span><span class="p">:</span> <span class="mi">50</span><span class="p">:</span> <span class="n">Too</span> <span class="n">long</span> <span class="n">line</span> <span class="p">(</span><span class="mi">86</span><span class="o">/</span><span class="mi">80</span><span class="p">)</span>
+<span class="n">W</span><span class="p">:</span><span class="mi">108</span><span class="p">:</span> <span class="n">Operator</span> <span class="ow">not</span> <span class="n">followed</span> <span class="n">by</span> <span class="n">a</span> <span class="n">space</span>
+     <span class="nb">print</span> <span class="o">&gt;&gt;</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="s1">'Unable to match </span><span class="si">%r</span><span class="s1">'</span><span class="p">,</span> <span class="n">line</span>
+            <span class="o">^</span>
+<span class="n">W</span><span class="p">:</span><span class="mi">141</span><span class="p">:</span> <span class="n">Too</span> <span class="n">long</span> <span class="n">line</span> <span class="p">(</span><span class="mi">81</span><span class="o">/</span><span class="mi">80</span><span class="p">)</span>
+<span class="n">W</span><span class="p">:</span> <span class="mi">74</span><span class="p">:</span><span class="n">searchall</span><span class="p">:</span> <span class="n">Unreachable</span> <span class="n">code</span>
+<span class="n">W</span><span class="p">:</span><span class="mi">171</span><span class="p">:</span><span class="n">FormatChecker</span><span class="o">.</span><span class="n">process_tokens</span><span class="p">:</span> <span class="n">Redefining</span> <span class="n">built</span><span class="o">-</span><span class="ow">in</span> <span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+<span class="n">W</span><span class="p">:</span><span class="mi">150</span><span class="p">:</span><span class="n">FormatChecker</span><span class="o">.</span><span class="n">process_tokens</span><span class="p">:</span> <span class="n">Too</span> <span class="n">many</span> <span class="n">local</span> <span class="n">variables</span> <span class="p">(</span><span class="mi">20</span><span class="o">/</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">W</span><span class="p">:</span><span class="mi">150</span><span class="p">:</span><span class="n">FormatChecker</span><span class="o">.</span><span class="n">process_tokens</span><span class="p">:</span> <span class="n">Too</span> <span class="n">many</span> <span class="n">branches</span> <span class="p">(</span><span class="mi">13</span><span class="o">/</span><span class="mi">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reports-section">
+<h2>Reports section<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#reports-section" title="Permalink to this headline">¶</a></h2>
+<p>Following the analysis message, Pylint can display a set of reports,
+each one focusing on a particular aspect of the project, such as number
+of messages by categories, modules dependencies. These features can
+be enabled through the <code class="docutils literal"><span class="pre">--reports=y</span></code> option, or its shorthand
+version <code class="docutils literal"><span class="pre">-rn</span></code>.</p>
+<p>For instance, the metrics report displays summaries gathered from the
+current run.</p>
+<blockquote>
+<div><ul class="simple">
+<li>the number of processed modules</li>
+<li>for each module, the percentage of errors and warnings</li>
+<li>the total number of errors and warnings</li>
+<li>percentage of classes, functions and modules with docstrings, and
+a comparison from the previous run</li>
+<li>percentage of classes, functions and modules with correct name
+(according to the coding standard), and a comparison from the
+previous run</li>
+<li>a list of external dependencies found in the code, and where they appear</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="score-section">
+<h2>Score section<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#score-section" title="Permalink to this headline">¶</a></h2>
+<p>Finally, Pylint displays a global evaluation score for the code, rated out of a
+maximum score of 10.0. This output can be suppressed through the <code class="docutils literal"><span class="pre">--score=n</span></code>
+option, or its shorthand version <code class="docutils literal"><span class="pre">-sn</span></code>.</p>
+<p>The evaluation formula can be overridden with the
+<code class="docutils literal"><span class="pre">--evaluation=&lt;python_expression&gt;</span></code> option.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pylint.readthedocs.io/en/latest/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#">Pylint output</a><ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#source-code-analysis-section">Source code analysis section</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#reports-section">Reports section</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html#score-section">Score section</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/user_guide/run.html" title="previous chapter">Running Pylint</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/user_guide/message-control.html" title="next chapter">Messages control</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://pylint.readthedocs.io/en/latest/_sources/user_guide/output.rst.txt" rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="https://pylint.readthedocs.io/en/latest/search.html" method="get">
+      <div><input type="text" name="q"></div>
+      <div><input type="submit" value="Go"></div>
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/message-control.html" title="Messages control">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/run.html" title="Running Pylint">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/user_guide/index.html">User Guide</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        © Copyright 2003-2018, Logilab, PyCQA and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  
+<!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+  <div class="rst-versions rst-badge" data-toggle="rst-versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book">&nbsp;</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://docs.pylint.org/en/latest/user_guide/output.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.8/user_guide/output.html">1.8</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.7/user_guide/output.html">1.7</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.6.0/user_guide/output.html">1.6.0</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/blob/master/doc/user_guide/output.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/edit/master/doc/user_guide/output.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/pylint/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>.
+      
+
+      
+    </div>
+  </div>
+  
+
+</div>
+</body></html>

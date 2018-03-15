@@ -1,0 +1,450 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0059)https://pylint.readthedocs.io/en/latest/user_guide/run.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Running Pylint — Pylint 2.0.0 documentation</title>
+    <link rel="stylesheet" href="./Running Pylint — Pylint 2.0.0 documentation_files/nature.css" type="text/css">
+    <link rel="stylesheet" href="./Running Pylint — Pylint 2.0.0 documentation_files/pygments.css" type="text/css">
+    <link rel="stylesheet" href="./Running Pylint — Pylint 2.0.0 documentation_files/badge_only.css" type="text/css">
+    <script async="" src="./Running Pylint — Pylint 2.0.0 documentation_files/analytics.js"></script><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/doctools.js"></script>
+    <script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="https://pylint.readthedocs.io/en/latest/genindex.html">
+    <link rel="search" title="Search" href="https://pylint.readthedocs.io/en/latest/search.html">
+    <link rel="next" title="Pylint output" href="https://pylint.readthedocs.io/en/latest/user_guide/output.html">
+    <link rel="prev" title="Installation" href="https://pylint.readthedocs.io/en/latest/user_guide/installation.html"> 
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://docs.pylint.org/en/latest/user_guide/run.html">
+
+<link rel="stylesheet" href="./Running Pylint — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'user_guide/run' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./Running Pylint — Pylint 2.0.0 documentation_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> -->
+</head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/output.html" title="Pylint output" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/installation.html" title="Installation" accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/user_guide/index.html" accesskey="U">User Guide</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="running-pylint">
+<h1>Running Pylint<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#running-pylint" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="invoking-pylint">
+<h2>Invoking Pylint<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#invoking-pylint" title="Permalink to this headline">¶</a></h2>
+<p>Pylint is meant to be called from the command line. The usage is</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pylint</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="n">modules_or_packages</span>
+</pre></div>
+</div>
+<p>You should give Pylint the name of a python package or module, or some number
+of packages or modules. Pylint
+<code class="docutils literal"><span class="pre">will</span> <span class="pre">not</span> <span class="pre">import</span></code> this package or module, though uses Python internals
+to locate them and as such is subject to the same rules and configuration.
+You should pay attention to your <code class="docutils literal"><span class="pre">PYTHONPATH</span></code>, since it is a common error
+to analyze an installed version of a module instead of the
+development version.</p>
+<p>It is also possible to analyze python files, with a few
+restrictions. The thing to keep in mind is that Pylint will try to
+convert the file name to a module name, and only be able to process
+the file if it succeeds.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pylint</span> <span class="n">mymodule</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>should always work since the current working
+directory is automatically added on top of the python path</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pylint</span> <span class="n">directory</span><span class="o">/</span><span class="n">mymodule</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>will work if <code class="docutils literal"><span class="pre">directory</span></code> is a python package (i.e. has an __init__.py
+file or it is an implicit namespace package) or if “directory” is in the
+python path.</p>
+<p>For more details on this see the <a class="reference internal" href="https://pylint.readthedocs.io/en/latest/faq.html#faq"><span class="std std-ref">Frequently Asked Questions</span></a>.</p>
+<p>It is also possible to call Pylint from another python program,
+thanks to <code class="docutils literal"><span class="pre">Run()</span></code> function in <code class="docutils literal"><span class="pre">pylint.lint</span></code> module,
+assuming Pylint options are stored in a list of strings <code class="docutils literal"><span class="pre">pylint_options</span></code>, as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylint.lint</span>
+<span class="n">pylint_opts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'--version'</span><span class="p">]</span>
+<span class="n">pylint</span><span class="o">.</span><span class="n">lint</span><span class="o">.</span><span class="n">Run</span><span class="p">(</span><span class="n">pylint_opts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To silently run Pylint on a <code class="docutils literal"><span class="pre">module_name.py</span></code> module,
+and get its standard output and error:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pylint</span> <span class="kn">import</span> <span class="n">epylint</span> <span class="k">as</span> <span class="n">lint</span>
+<span class="p">(</span><span class="n">pylint_stdout</span><span class="p">,</span> <span class="n">pylint_stderr</span><span class="p">)</span> <span class="o">=</span> <span class="n">lint</span><span class="o">.</span><span class="n">py_run</span><span class="p">(</span><span class="s1">'module_name.py'</span><span class="p">,</span> <span class="n">return_std</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="command-line-options">
+<h2>Command line options<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#command-line-options" title="Permalink to this headline">¶</a></h2>
+<p>First of all, we have two basic (but useful) options.</p>
+<div class="wy-table-responsive"><table class="docutils option-list" frame="void" rules="none">
+<colgroup><col class="option">
+<col class="description">
+</colgroup><tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>show program’s version number and exit</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show help about the command line options</td></tr>
+</tbody>
+</table></div>
+<p>Pylint is architectured around several checkers. you can disable a specific
+checker or some of its messages or messages categories by specifying
+<code class="docutils literal"><span class="pre">--disable=&lt;symbol&gt;</span></code>. If you want to enable only some checkers or some
+message symbols, first use <code class="docutils literal"><span class="pre">--disable=all</span></code> then
+<code class="docutils literal"><span class="pre">--enable=&lt;symbol&gt;</span></code> with &lt;symbol&gt; being a comma separated list of checker
+names and message symbols. See the list of available features for a
+description of provided checkers with their functionalities.
+The <code class="docutils literal"><span class="pre">--disable</span></code> and <code class="docutils literal"><span class="pre">--enable</span></code> options can be used with comma separated lists
+mixing checkers, message ids and categories like <code class="docutils literal"><span class="pre">-d</span> <span class="pre">C,W,no-error,design</span></code></p>
+<p>It is possible to disable all messages with <code class="docutils literal"><span class="pre">--disable=all</span></code>. This is
+useful to enable only a few checkers or a few messages by first
+disabling everything, and then re-enabling only what you need.</p>
+<p>Each checker has some specific options, which can take either a yes/no
+value, an integer, a python regular expression, or a comma separated
+list of values (which are generally used to override a regular
+expression in special cases). For a full list of options, use <code class="docutils literal"><span class="pre">--help</span></code></p>
+<p>Specifying all the options suitable for your setup and coding
+standards can be tedious, so it is possible to use a configuration file to
+specify the default values.  You can specify a configuration file on the
+command line using the <code class="docutils literal"><span class="pre">--rcfile</span></code> option.  Otherwise, Pylint searches for a
+configuration file in the following order and uses the first one it finds:</p>
+<ol class="arabic simple">
+<li><code class="docutils literal"><span class="pre">pylintrc</span></code> in the current working directory</li>
+<li><code class="docutils literal"><span class="pre">.pylintrc</span></code> in the current working directory</li>
+<li>If the current working directory is in a Python module, Pylint searches up the hierarchy of Python modules until it finds a <code class="docutils literal"><span class="pre">pylintrc</span></code> file. This allows you to specify coding standards on a module-by-module basis.  Of course, a directory is judged to be a Python module if it contains an <code class="docutils literal"><span class="pre">__init__.py</span></code> file.</li>
+<li>The file named by environment variable <code class="docutils literal"><span class="pre">PYLINTRC</span></code></li>
+<li>if you have a home directory which isn’t <code class="docutils literal"><span class="pre">/root</span></code>:<ol class="arabic">
+<li><code class="docutils literal"><span class="pre">.pylintrc</span></code> in your home directory</li>
+<li><code class="docutils literal"><span class="pre">.config/pylintrc</span></code> in your home directory</li>
+</ol>
+</li>
+<li><code class="docutils literal"><span class="pre">/etc/pylintrc</span></code></li>
+</ol>
+<p>The <code class="docutils literal"><span class="pre">--generate-rcfile</span></code> option will generate a commented configuration file
+on standard output according to the current configuration and exit. This
+includes:</p>
+<ul class="simple">
+<li>Any configuration file found as explained above</li>
+<li>Options appearing before <code class="docutils literal"><span class="pre">--generate-rcfile</span></code> on the Pylint command line</li>
+</ul>
+<p>Of course you can also start with the default values and hand tune the
+configuration.</p>
+<p>Other useful global options include:</p>
+<div class="wy-table-responsive"><table class="docutils option-list" frame="void" rules="none">
+<colgroup><col class="option">
+<col class="description">
+</colgroup><tbody valign="top">
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--ignore=<var>&lt;file[,file…]&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Add files or directories to the blacklist. They
+should be base names, not paths.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--output-format=<var>&lt;format&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Select output format (text, json, custom).</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--msg-template=<var>&lt;template&gt;</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Modify text output message template.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--list-msgs</span></kbd></td>
+<td>Generate pylint’s messages.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--full-documentation</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Generate pylint’s full documentation, in reST
+format.</td></tr>
+</tbody>
+</table></div>
+</div>
+<div class="section" id="parallel-execution">
+<h2>Parallel execution<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#parallel-execution" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to speed up the execution of Pylint. If the running computer
+has more CPUs than one, then the files for checking could be spread on all
+cores via Pylints’s sub-processes.
+This functionality is exposed via <code class="docutils literal"><span class="pre">-j</span></code> command line parameter.
+If the provided number is 0, then the total number of CPUs will be used.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pylint</span> <span class="o">-</span><span class="n">j</span> <span class="mi">4</span> <span class="n">mymodule1</span><span class="o">.</span><span class="n">py</span> <span class="n">mymodule2</span><span class="o">.</span><span class="n">py</span> <span class="n">mymodule3</span><span class="o">.</span><span class="n">py</span> <span class="n">mymodule4</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>This will spawn 4 parallel Pylint sub-process, where each provided module will
+be checked in parallel. Discovered problems by checkers are not displayed
+immediately. They are shown just after completing checking a module.</p>
+<p>There are some limitations in running checks in parallel in current
+implementation. It is not possible to use custom plugins
+(i.e. <code class="docutils literal"><span class="pre">--load-plugins</span></code> option), nor it is not possible to use
+initialization hooks (i.e. <code class="docutils literal"><span class="pre">--init-hook</span></code> option).</p>
+<p>This will spawn 4 parallel Pylint subprocesses, each provided module being checked
+by one or another subprocess.</p>
+</div>
+<div class="section" id="exit-codes">
+<h2>Exit codes<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#exit-codes" title="Permalink to this headline">¶</a></h2>
+<p>Pylint returns bit-encoded exit codes. If applicable the table lists related
+stderr stream message output.</p>
+<div class="wy-table-responsive"><table border="1" class="docutils">
+<colgroup>
+<col width="12%">
+<col width="33%">
+<col width="55%">
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">exit code</th>
+<th class="head">meaning</th>
+<th class="head">stderr stream message</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0</td>
+<td>no error</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>1</td>
+<td>fatal message issued</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>2</td>
+<td>error message issued</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>4</td>
+<td>warning message issued</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>8</td>
+<td>refactor message issued</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>convention message issued</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>32</td>
+<td>usage error</td>
+<td><ul class="first last simple">
+<li>“internal error while receiving resultsfrom child linter” “Error occurred,
+stopping the linter.”</li>
+<li>“&lt;return of linter.help()&gt;”</li>
+<li>“Jobs number &lt;#&gt; should be greater than 0”</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pylint.readthedocs.io/en/latest/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#">Running Pylint</a><ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#invoking-pylint">Invoking Pylint</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#command-line-options">Command line options</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#parallel-execution">Parallel execution</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/user_guide/run.html#exit-codes">Exit codes</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/user_guide/installation.html" title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/user_guide/output.html" title="next chapter">Pylint output</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://pylint.readthedocs.io/en/latest/_sources/user_guide/run.rst.txt" rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="https://pylint.readthedocs.io/en/latest/search.html" method="get">
+      <div><input type="text" name="q"></div>
+      <div><input type="submit" value="Go"></div>
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/output.html" title="Pylint output">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/user_guide/installation.html" title="Installation">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/user_guide/index.html">User Guide</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        © Copyright 2003-2018, Logilab, PyCQA and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  
+<!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+  <div class="rst-versions rst-badge" data-toggle="rst-versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book">&nbsp;</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://docs.pylint.org/en/latest/user_guide/run.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.8/user_guide/run.html">1.8</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.7/user_guide/run.html">1.7</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.6.0/user_guide/run.html">1.6.0</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/blob/master/doc/user_guide/run.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/edit/master/doc/user_guide/run.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/pylint/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>.
+      
+
+      
+    </div>
+  </div>
+  
+
+</div>
+</body></html>

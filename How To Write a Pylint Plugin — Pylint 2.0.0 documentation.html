@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0060)https://pylint.readthedocs.io/en/latest/how_tos/plugins.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>How To Write a Pylint Plugin — Pylint 2.0.0 documentation</title>
+    <link rel="stylesheet" href="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/nature.css" type="text/css">
+    <link rel="stylesheet" href="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/pygments.css" type="text/css">
+    <link rel="stylesheet" href="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/badge_only.css" type="text/css">
+    <script async="" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/analytics.js"></script><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/doctools.js"></script>
+    <script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="https://pylint.readthedocs.io/en/latest/genindex.html">
+    <link rel="search" title="Search" href="https://pylint.readthedocs.io/en/latest/search.html">
+    <link rel="next" title="Transform plugins" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html">
+    <link rel="prev" title="How to Write a Checker" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html"> 
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://docs.pylint.org/en/latest/how_tos/plugins.html">
+
+<link rel="stylesheet" href="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'how_tos/plugins' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./How To Write a Pylint Plugin — Pylint 2.0.0 documentation_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> -->
+</head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html" title="Transform plugins" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html" title="How to Write a Checker" accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html" accesskey="U">How To Guides</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="how-to-write-a-pylint-plugin">
+<h1>How To Write a Pylint Plugin<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html#how-to-write-a-pylint-plugin" title="Permalink to this headline">¶</a></h1>
+<p>Pylint provides support for writing two types of extensions.
+First, there is the concept of <strong>checkers</strong>,
+which can be used for finding problems in your code.
+Secondly, there is also the concept of <strong>transform plugin</strong>,
+which represents a way through which the inference and
+the capabilities of Pylint can be enhanced
+and tailored to a particular module, library of framework.</p>
+<p>In general, a plugin is a module which should have a function <code class="docutils literal"><span class="pre">register</span></code>,
+which takes an instance of <code class="docutils literal"><span class="pre">pylint.lint.PyLinter</span></code> as input.</p>
+<p>So a basic hello-world plugin can be implemented as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Inside hello_plugin.py</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">linter</span><span class="p">):</span>
+  <span class="k">print</span> <span class="s1">'Hello world'</span>
+</pre></div>
+</div>
+<p>We can run this plugin by placing this module in the PYTHONPATH and invoking
+<strong>pylint</strong> as:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ pylint -E --load-plugins hello_plugin foo.py
+Hello world
+</pre></div>
+</div>
+<p>Depending if we need a <strong>transform plugin</strong> or a <strong>checker</strong>, this might not
+be enough. For the former, this is enough to declare the module as a plugin,
+but in the case of the latter, we need to register our checker with the linter
+object, by calling the following inside the <code class="docutils literal"><span class="pre">register</span></code> function:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">linter</span><span class="o">.</span><span class="n">register_checker</span><span class="p">(</span><span class="n">OurChecker</span><span class="p">(</span><span class="n">linter</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>For more information on writing a checker see <a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html#write-a-checker"><span class="std std-ref">How to Write a Checker</span></a>.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html" title="previous chapter">How to Write a Checker</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html" title="next chapter">Transform plugins</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://pylint.readthedocs.io/en/latest/_sources/how_tos/plugins.rst.txt" rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="https://pylint.readthedocs.io/en/latest/search.html" method="get">
+      <div><input type="text" name="q"></div>
+      <div><input type="submit" value="Go"></div>
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html" title="Transform plugins">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/custom_checkers.html" title="How to Write a Checker">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html">How To Guides</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        © Copyright 2003-2018, Logilab, PyCQA and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  
+<!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+  <div class="rst-versions rst-badge" data-toggle="rst-versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book">&nbsp;</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://docs.pylint.org/en/latest/how_tos/plugins.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.8/how_tos/plugins.html">1.8</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.7/how_tos/plugins.html">1.7</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.6.0/how_tos/plugins.html">1.6.0</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/blob/master/doc/how_tos/plugins.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/edit/master/doc/how_tos/plugins.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/pylint/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>.
+      
+
+      
+    </div>
+  </div>
+  
+
+</div>
+</body></html>

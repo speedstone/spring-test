@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0070)https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Transform plugins — Pylint 2.0.0 documentation</title>
+    <link rel="stylesheet" href="./Transform plugins — Pylint 2.0.0 documentation_files/nature.css" type="text/css">
+    <link rel="stylesheet" href="./Transform plugins — Pylint 2.0.0 documentation_files/pygments.css" type="text/css">
+    <link rel="stylesheet" href="./Transform plugins — Pylint 2.0.0 documentation_files/badge_only.css" type="text/css">
+    <script async="" src="./Transform plugins — Pylint 2.0.0 documentation_files/analytics.js"></script><script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/underscore.js"></script>
+    <script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/doctools.js"></script>
+    <script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.js"></script>
+    <link rel="index" title="Index" href="https://pylint.readthedocs.io/en/latest/genindex.html">
+    <link rel="search" title="Search" href="https://pylint.readthedocs.io/en/latest/search.html">
+    <link rel="next" title="Technical Reference" href="https://pylint.readthedocs.io/en/latest/technical_reference/index.html">
+    <link rel="prev" title="How To Write a Pylint Plugin" href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html"> 
+  
+<!-- RTD Extra Head -->
+
+<!-- 
+Always link to the latest version, as canonical.
+http://docs.readthedocs.org/en/latest/canonical.html
+-->
+<link rel="canonical" href="http://docs.pylint.org/en/latest/how_tos/transform_plugins.html">
+
+<link rel="stylesheet" href="./Transform plugins — Pylint 2.0.0 documentation_files/readthedocs-doc-embed.css" type="text/css">
+
+<script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/readthedocs-data.js"></script>
+
+<!-- Add page-specific data, which must exist in the page js, not global -->
+<script type="text/javascript">
+READTHEDOCS_DATA['page'] = 'how_tos/transform_plugins' 		
+READTHEDOCS_DATA['source_suffix'] = '.rst'
+</script>
+
+<script type="text/javascript" src="./Transform plugins — Pylint 2.0.0 documentation_files/readthedocs-dynamic-include.js"></script>
+
+<!-- end RTD <extrahead> -->
+</head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/technical_reference/index.html" title="Technical Reference" accesskey="N">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html" title="How To Write a Pylint Plugin" accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html" accesskey="U">How To Guides</a> »</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="transform-plugins">
+<h1>Transform plugins<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#transform-plugins" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="why-write-a-plugin">
+<h2>Why write a plugin?<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#why-write-a-plugin" title="Permalink to this headline">¶</a></h2>
+<p>Pylint is a static analysis tool and Python is a dynamically typed language.
+So there will be cases where Pylint cannot analyze files properly (this problem
+can happen in statically typed languages also if reflection or dynamic
+evaluation is used).</p>
+<p>The plugins are a way to tell Pylint how to handle such cases,
+since only the user would know what needs to be done. They are usually operating
+on the AST level, by modifying or changing it in a way which can ease its
+understanding by Pylint.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#example" title="Permalink to this headline">¶</a></h2>
+<p>Let us run Pylint on a module from the Python source: <a class="reference external" href="http://hg.python.org/cpython/file/2.7/Lib/warnings.py">warnings.py</a> and see what happens:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>amitdev$ pylint -E Lib/warnings.py
+E:297,36: Instance of <span class="s1">'WarningMessage'</span> has no <span class="s1">'message'</span> member <span class="o">(</span>no-member<span class="o">)</span>
+E:298,36: Instance of <span class="s1">'WarningMessage'</span> has no <span class="s1">'filename'</span> member <span class="o">(</span>no-member<span class="o">)</span>
+E:298,51: Instance of <span class="s1">'WarningMessage'</span> has no <span class="s1">'lineno'</span> member <span class="o">(</span>no-member<span class="o">)</span>
+E:298,64: Instance of <span class="s1">'WarningMessage'</span> has no <span class="s1">'line'</span> member <span class="o">(</span>no-member<span class="o">)</span>
+</pre></div>
+</div>
+<p>Did we catch a genuine error? Let’s open the code and look at <code class="docutils literal"><span class="pre">WarningMessage</span></code> class:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">WarningMessage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+  <span class="sd">"""Holds the result of a single showwarning() call."""</span>
+
+  <span class="n">_WARNING_DETAILS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="s2">"category"</span><span class="p">,</span> <span class="s2">"filename"</span><span class="p">,</span> <span class="s2">"lineno"</span><span class="p">,</span> <span class="s2">"file"</span><span class="p">,</span>
+                      <span class="s2">"line"</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                  <span class="n">line</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">local_values</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_WARNING_DETAILS</span><span class="p">:</span>
+      <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">local_values</span><span class="p">[</span><span class="n">attr</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_category_name</span> <span class="o">=</span> <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span> <span class="k">if</span> <span class="n">category</span> <span class="k">else</span> <span class="bp">None</span>
+
+  <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Ah, the fields (<code class="docutils literal"><span class="pre">message</span></code>, <code class="docutils literal"><span class="pre">category</span></code> etc) are not defined statically on the class.
+Instead they are added using <code class="docutils literal"><span class="pre">setattr</span></code>. Pylint would have a tough time figuring
+this out.</p>
+</div>
+<div class="section" id="enter-plugin">
+<h2>Enter Plugin<a class="headerlink" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#enter-plugin" title="Permalink to this headline">¶</a></h2>
+<p>We can write a transform plugin to tell Pylint how to analyze this properly.</p>
+<p>One way to fix our example with a plugin would be to transform the <code class="docutils literal"><span class="pre">WarningMessage</span></code> class,
+by setting the attributes so that Pylint can see them. This can be done by
+registering a transform function. We can transform any node in the parsed AST like
+Module, Class, Function etc. In our case we need to transform a class. It can be done so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">astroid</span>
+<span class="kn">from</span> <span class="nn">astroid</span> <span class="kn">import</span> <span class="n">MANAGER</span>
+
+<span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">linter</span><span class="p">):</span>
+  <span class="c1"># Needed for registering the plugin.</span>
+  <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+  <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">'WarningMessage'</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">warnings</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">warnings</span><span class="o">.</span><span class="n">WarningMessage</span><span class="o">.</span><span class="n">_WARNING_DETAILS</span><span class="p">:</span>
+      <span class="bp">cls</span><span class="o">.</span><span class="n">locals</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">astroid</span><span class="o">.</span><span class="n">Class</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">None</span><span class="p">)]</span>
+
+<span class="n">MANAGER</span><span class="o">.</span><span class="n">register_transform</span><span class="p">(</span><span class="n">astroid</span><span class="o">.</span><span class="n">Class</span><span class="p">,</span> <span class="n">transform</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s go through the plugin. First, we need to register a class transform, which
+is done via the <code class="docutils literal"><span class="pre">register_transform</span></code> function in <code class="docutils literal"><span class="pre">MANAGER</span></code>. It takes the node
+type and function as parameters. We need to change a class, so we use <code class="docutils literal"><span class="pre">astroid.Class</span></code>.
+We also pass a <code class="docutils literal"><span class="pre">transform</span></code> function which does the actual transformation.</p>
+<p><code class="docutils literal"><span class="pre">transform</span></code> function is simple as well. If the class is <code class="docutils literal"><span class="pre">WarningMessage</span></code> then we
+add the attributes to its locals (we are not bothered about type of attributes, so setting
+them as class will do. But we could set them to any type we want). That’s it.</p>
+<p>Note: We don’t need to do anything in the <code class="docutils literal"><span class="pre">register</span></code> function of the plugin since we
+are not modifying anything in the linter itself.</p>
+<p>Lets run Pylint with this plugin and see:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>amitdev$ pylint -E --load-plugins warning_plugin Lib/warnings.py
+amitdev$
+</pre></div>
+</div>
+<p>All the false positives associated with <code class="docutils literal"><span class="pre">WarningMessage</span></code> are now gone. This is just
+an example, any code transformation can be done by plugins.</p>
+<p>See <a class="reference external" href="https://github.com/PyCQA/astroid/tree/master/astroid/brain">astroid/brain</a> for real life examples of transform plugins.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="https://pylint.readthedocs.io/en/latest/index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#">Transform plugins</a><ul>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#why-write-a-plugin">Why write a plugin?</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#example">Example</a></li>
+<li><a class="reference internal" href="https://pylint.readthedocs.io/en/latest/how_tos/transform_plugins.html#enter-plugin">Enter Plugin</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html" title="previous chapter">How To Write a Pylint Plugin</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="https://pylint.readthedocs.io/en/latest/technical_reference/index.html" title="next chapter">Technical Reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="https://pylint.readthedocs.io/en/latest/_sources/how_tos/transform_plugins.rst.txt" rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="https://pylint.readthedocs.io/en/latest/search.html" method="get">
+      <div><input type="text" name="q"></div>
+      <div><input type="submit" value="Go"></div>
+      <input type="hidden" name="check_keywords" value="yes">
+      <input type="hidden" name="area" value="default">
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="https://pylint.readthedocs.io/en/latest/genindex.html" title="General Index">index</a></li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/technical_reference/index.html" title="Technical Reference">next</a> |</li>
+        <li class="right">
+          <a href="https://pylint.readthedocs.io/en/latest/how_tos/plugins.html" title="How To Write a Pylint Plugin">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="https://pylint.readthedocs.io/en/latest/index.html">Pylint 2.0.0 documentation</a> »</li>
+          <li class="nav-item nav-item-1"><a href="https://pylint.readthedocs.io/en/latest/how_tos/index.html">How To Guides</a> »</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        © Copyright 2003-2018, Logilab, PyCQA and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  
+<!-- Inserted RTD Footer -->
+<div class="injected">
+
+  
+  <div class="rst-versions rst-badge" data-toggle="rst-versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book">&nbsp;</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      
+
+      
+      
+      
+      <dl>
+        <dt>Versions</dt>
+        
+         <strong> 
+        <dd><a href="http://docs.pylint.org/en/latest/how_tos/transform_plugins.html">latest</a></dd>
+         </strong> 
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.8/how_tos/transform_plugins.html">1.8</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.7/how_tos/transform_plugins.html">1.7</a></dd>
+        
+        
+        
+        <dd><a href="http://docs.pylint.org/en/1.6.0/how_tos/transform_plugins.html">1.6.0</a></dd>
+        
+        
+      </dl>
+      
+      
+
+      
+      
+      <dl>
+        <dt>Downloads</dt>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/pdf/latest/">PDF</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/htmlzip/latest/">HTML</a></dd>
+        
+        <dd><a href="https://readthedocs.org/projects/pylint/downloads/epub/latest/">Epub</a></dd>
+        
+      </dl>
+      
+      
+
+      
+      <dl>
+        <!-- These are kept as relative links for internal installs that are http -->
+        <dt>On Read the Docs</dt>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/">Project Home</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/builds/">Builds</a>
+        </dd>
+        <dd>
+          <a href="https://readthedocs.org/projects/pylint/downloads/">Downloads</a>
+        </dd>
+      </dl>
+      
+
+      
+
+      
+      <dl>
+        <dt>On GitHub</dt>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/blob/master/doc/how_tos/transform_plugins.rst">View</a>
+        </dd>
+        <dd>
+          <a href="https://github.com/PyCQA/pylint/edit/master/doc/how_tos/transform_plugins.rst">Edit</a>
+        </dd>
+      </dl>
+      
+      
+
+      
+      <dl>
+        <dt>Search</dt>
+        <dd>
+          <div style="padding: 6px;">
+            <form id="flyout-search-form" class="wy-form" target="_blank" action="https://readthedocs.org/projects/pylint/search/" method="get">
+              <input type="text" name="q" placeholder="Search docs">
+              </form>
+          </div>
+        </dd>
+      </dl>
+      
+
+
+
+      <hr>
+      
+      Free document hosting provided by <a href="https://readthedocs.org/">Read the Docs</a>.
+      
+
+      
+    </div>
+  </div>
+  
+
+</div>
+</body></html>
