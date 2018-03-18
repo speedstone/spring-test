@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<li><a>module A</a>
+    <ul>
+        <li><a>Item 3.0</a>
+            <ul>
+                <li><a>Item 3.0.0</a></li>
+                <li><a>Item 3.0.1</a></li>
+                <li><a>Item 3.0.2</a>
+                    <ul>
+                        <li><a>Item 3.0.2.0</a></li>
+                        <li><a>Item 3.0.2.1</a></li>
+                        <li><a>Item 3.0.2.2</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+<li><a>module B</a>
+    <ul>
+        <li><a>Item 3.0</a>
+            <ul>
+                <li><a>Item 3.0.0</a></li>
+                <li><a>Item 3.0.1</a></li>
+                <li><a>Item 3.0.2</a>
+                    <ul>
+                        <li><a>Item 3.0.2.0</a></li>
+                        <li><a>Item 3.0.2.1</a></li>
+                        <li><a>Item 3.0.2.2</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+<li><a>module C</a>
+    <ul>
+        <li><a>Item 3.0</a>
+            <ul>
+                <li><a>Item 3.0.0</a></li>
+                <li><a>Item 3.0.1</a></li>
+                <li><a>Item 3.0.2</a>
+                    <ul>
+                        <li><a>Item 3.0.2.0</a></li>
+                        <li><a>Item 3.0.2.1</a></li>
+                        <li><a>Item 3.0.2.2</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</li>
+<ul id="a" class="moduleA">
+    <li id="moduleA"><a>Module A</a>
+        <ul id="codepath">
+            <li>
+                <a>cc/xx/ccc/c.cc</a>
+                <ul>
+                    <li><a>创建表格[creatGrid]</a></li>
+                    <li><a>异步提交[ajaxTodo]</a></li>
+                </ul>
+            </li>
+            <li>
+                <a>cc/xx/bb/b.cc</a>
+                <ul>
+                    <li><a>基本表格</a></li>
+                    <li><a>可编辑表格</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+<ul id="b" class="moduleB">
+    <li id="moduleB"><a>Module B</a>
+        <ul>
+            <li>
+                <a>cc/xx/ccc/c.cc</a>
+                <ul>
+                    <li><a>综合1</a></li>
+                    <li><a>新闻列表</a></li>
+                    <li><a>新闻查看</a></li>
+                </ul>
+            </li>
+            <li>
+                <a>cc/xx/ccc/c.cc</a>
+                <ul>
+                    <li><a>表单设计</a></li>
+                    <li><a>表单设计2</a></li>
+                    <li><a>弹出框</a></li>
+                    <li><a>申请表</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+<a href="#" id="toggle">展开</a>
+<div id="content" style="display: none;"><p>隐藏内容<p><p>隐藏内容<p></div>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $("#toggle").click(function() {
+            console.log("click");
+            $(this).text($("#content").is(":hidden") ? "收起" : "展开");
+            $("#content").slideToggle();
+        });
+    });
+</script>
